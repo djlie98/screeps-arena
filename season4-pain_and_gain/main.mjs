@@ -1,7 +1,6 @@
-import { } from 'game/utils';
-import { } from 'game/prototypes';
-import { } from 'game/constants';
-
-export function loop() {
-    // Your code goes here
+// season4-pain_and_gain/src/main.ts
+function loop() {
 }
+export {
+  loop
+};

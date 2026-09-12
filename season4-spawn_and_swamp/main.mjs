@@ -1,16 +1,21 @@
+// season4-spawn_and_swamp/src/main.ts
 import { getObjectsByPrototype } from "game/utils";
 import { ATTACK, MOVE } from "game/constants";
 import { StructureSpawn } from "game/prototypes";
-
-let attacker;
-
-export function loop() {
+var attacker;
+function loop() {
   if (!attacker) {
-    var mySpawn = getObjectsByPrototype(StructureSpawn).find((i) => i.my);
-    attacker = mySpawn.spawnCreep([MOVE, ATTACK]).object;
-  } else {
-    const enemySpawn = getObjectsByPrototype(StructureSpawn).find((i) => !i.my);
-    attacker.moveTo(enemySpawn);
-    attacker.attack(enemySpawn);
+    const mySpawn = getObjectsByPrototype(StructureSpawn).find((s) => s.my);
+    attacker = mySpawn?.spawnCreep([MOVE, ATTACK]).object;
+    return;
   }
+  const enemySpawn = getObjectsByPrototype(StructureSpawn).find((s) => !s.my);
+  if (!enemySpawn) {
+    return;
+  }
+  attacker.moveTo(enemySpawn);
+  attacker.attack(enemySpawn);
 }
+export {
+  loop
+};

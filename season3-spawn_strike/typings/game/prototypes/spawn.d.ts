@@ -7,6 +7,7 @@ declare module "game/prototypes/spawn" {
     import { Creep } from "game/prototypes/creep";
     import { Store } from "game/prototypes/store";
     import { OwnedStructure } from "game/prototypes/owned-structure";
+    import { Direction } from "game/utils";
 
     /** {@link createConstructionSite} call result*/
     export interface SpawnCreepResult {
@@ -43,13 +44,13 @@ declare module "game/prototypes/spawn" {
         spawning: Spawning;
 
         /** The directions in which the spawn can create creeps */
-        directions: DirectionConstant[];
+        directions: Direction[];
 
         /**
          * Set the directions in which the spawn can create creeps
          * @param directions An array of direction constants
          */
-        setDirections(directions: DirectionConstant[]): SetDirectionsResult;
+        setDirections(directions: Direction[]): SetDirectionsResult;
 
         /**
          * Start the creep spawning process

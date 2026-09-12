@@ -1,0 +1,21 @@
+{
+  "name": "screeps-arena",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "TypeScript workspace for Screeps: Arena bots",
+  "scripts": {
+    "patch-typings": "node scripts/patch-typings.mjs",
+    "prebuild": "npm run patch-typings",
+    "build": "node scripts/build.mjs",
+    "prewatch": "npm run patch-typings",
+    "watch": "node scripts/build.mjs --watch",
+    "pretypecheck": "npm run patch-typings",
+    "typecheck": "node scripts/typecheck.mjs",
+    "new-arena": "node scripts/new-arena.mjs"
+  },
+  "devDependencies": {
+    "esbuild": "^0.24.0",
+    "typescript": "^5.6.3"
+  }
+}

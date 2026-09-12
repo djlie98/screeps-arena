@@ -1,5 +1,3 @@
-import {SearchPathOptions} from "../path-finder";
-
 declare module "game/prototypes/game-object" {
     import { getObjectById, FindPathOptions } from "game/utils";
     
@@ -37,7 +35,7 @@ declare module "game/prototypes/game-object" {
      * Basic prototype for game objects.
      * All objects and classes are inherited from this class
      */
-    export class GameObject extends Position {
+    export class GameObject {
         /** true if this object is live in the game at the moment */
         exists: boolean;
 
