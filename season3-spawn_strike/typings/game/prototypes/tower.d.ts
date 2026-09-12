@@ -2,6 +2,8 @@ declare module "game/prototypes/tower" {
     import { OK, ERR_NOT_OWNER, ERR_TIRED, ERR_INVALID_TARGET, ERR_NOT_ENOUGH_ENERGY } from "game/constants";
     import { OwnedStructure } from "game/prototypes/owned-structure";
     import { Store } from "game/prototypes/store";
+    import { Creep } from "game/prototypes/creep";
+    import { Structure } from "game/prototypes/structure";
 
     type TowerAttackResult = typeof OK |
         typeof ERR_NOT_OWNER |

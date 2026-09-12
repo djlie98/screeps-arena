@@ -10,11 +10,11 @@ declare module "game/prototypes/creep" {
         ERR_INVALID_ARGS,
         ERR_TIRED,
         ERR_NO_BODYPART,
-        ATTACK, CARRY, HEAL, MOVE, RANGED_ATTACK, WORK
+        ATTACK, CARRY, HEAL, MOVE, RANGED_ATTACK, TOUGH, WORK
     } from "game/constants";
 
     import { findPath } from "game/utils";
-    import { Position } from "game/utils";
+    import { Position } from "game/prototypes/game-object";
     import { GameObject } from "game/prototypes/game-object";
     import { Structure } from "game/prototypes/structure";
     import { ConstructionSite } from "game/prototypes/construction-site";

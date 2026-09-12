@@ -1,10 +1,10 @@
-// tutorial/src/main.ts
 import { createConstructionSite, getObjectsByPrototype } from "game/utils";
 import {
   Creep,
+  ConstructionSite,
   Source,
   StructureSpawn,
-  StructureTower
+  StructureTower,
 } from "game/prototypes";
 import {
   ATTACK,
@@ -13,27 +13,33 @@ import {
   MOVE,
   RANGED_ATTACK,
   RESOURCE_ENERGY,
-  WORK
+  WORK,
 } from "game/constants";
-var State = Object.freeze({
+
+const State = Object.freeze({
   HARVEST: "HARVEST",
   BUILD: "BUILD",
   STORE: "STORE",
   ATTACK: "ATTACK",
-  STANDBY: "STANDBY"
-});
-var sources = getObjectsByPrototype(Source);
-var constructionSite;
-var enemies = getObjectsByPrototype(Creep).filter((creep) => !creep.my);
-var target;
-var spawner = getObjectsByPrototype(StructureSpawn).find(
-  (struct) => struct.my
+  STANDBY: "STANDBY",
+} as const);
+
+type StateName = (typeof State)[keyof typeof State];
+
+const sources = getObjectsByPrototype(Source);
+let constructionSite: ConstructionSite | undefined;
+const enemies = getObjectsByPrototype(Creep).filter((creep) => !creep.my);
+let target: Creep | undefined;
+
+const spawner = getObjectsByPrototype(StructureSpawn).find(
+  (struct) => struct.my,
 );
-var harvest;
-var builder;
-var vanguard;
-var archer;
-var runner = {
+let harvest: Creep | undefined;
+let builder: Creep | undefined;
+let vanguard: Creep | undefined;
+let archer: Creep | undefined;
+
+const runner: Record<StateName, (creep: Creep) => void> = {
   [State.HARVEST]: (creep) => {
     const closestSource = creep.findClosestByPath(sources);
     const err = creep.harvest(closestSource);
@@ -45,7 +51,7 @@ var runner = {
     if (!constructionSite) {
       constructionSite = createConstructionSite(
         { x: 50, y: 55 },
-        StructureTower
+        StructureTower,
       ).object;
     }
     if (constructionSite && creep.build(constructionSite) === ERR_NOT_IN_RANGE) {
@@ -57,8 +63,7 @@ var runner = {
       creep.moveTo(spawner);
     }
   },
-  [State.STANDBY]: (_creep) => {
-  },
+  [State.STANDBY]: (_creep) => {},
   [State.ATTACK]: (creep) => {
     if (!target) {
       return;
@@ -73,9 +78,10 @@ var runner = {
         creep.moveTo(target);
       }
     }
-  }
+  },
 };
-function handleSpawner() {
+
+function handleSpawner(): void {
   if (!harvest) {
     harvest = spawner?.spawnCreep([MOVE, WORK, CARRY]).object;
     return;
@@ -83,6 +89,7 @@ function handleSpawner() {
   if (!harvest.exists) {
     return;
   }
+
   if (!builder) {
     builder = spawner?.spawnCreep([MOVE, WORK, CARRY]).object;
     return;
@@ -90,6 +97,7 @@ function handleSpawner() {
   if (!builder.exists) {
     return;
   }
+
   if (!vanguard) {
     vanguard = spawner?.spawnCreep([MOVE, ATTACK]).object;
     return;
@@ -97,32 +105,39 @@ function handleSpawner() {
   if (!vanguard.exists) {
     return;
   }
+
   if (!archer) {
     archer = spawner?.spawnCreep([MOVE, RANGED_ATTACK]).object;
   }
 }
-function handleHarvester() {
+
+function handleHarvester(): void {
   if (!harvest || !harvest.exists) {
     return;
   }
   const activeHarvest = harvest;
-  function getState() {
+
+  function getState(): StateName {
     if (activeHarvest.store[RESOURCE_ENERGY] < (activeHarvest.store.getCapacity() ?? 0)) {
       return State.HARVEST;
     }
     return State.STORE;
   }
+
   const state = getState();
   console.log(state);
   runner[state](activeHarvest);
 }
-var currentState = State.STANDBY;
-function handleAttacker(creep) {
+
+let currentState: StateName = State.STANDBY;
+
+function handleAttacker(creep: Creep | undefined): void {
   if (!creep || !creep.exists) {
     return;
   }
   const activeCreep = creep;
-  function getState(current) {
+
+  function getState(current: StateName): StateName {
     if (current === State.STANDBY) {
       for (const enemy of enemies) {
         if (activeCreep.getRangeTo(enemy) < 10) {
@@ -135,22 +150,21 @@ function handleAttacker(creep) {
         return State.STANDBY;
       }
       if (target.hits === 0) {
-        target = void 0;
+        target = undefined;
         return State.STANDBY;
       }
     }
     return State.STANDBY;
   }
+
   currentState = getState(currentState);
   console.log(currentState);
   runner[currentState](activeCreep);
 }
-function loop() {
+
+export function loop(): void {
   handleSpawner();
   handleHarvester();
   handleAttacker(vanguard);
   handleAttacker(archer);
 }
-export {
-  loop
-};
