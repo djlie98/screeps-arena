@@ -1,5 +1,6 @@
 import * as esbuild from "esbuild";
-import { findArenas } from "./arenas.mjs";
+import { findArenas, rootDir } from "./arenas.mjs";
+import path from "node:path";
 
 const watch = process.argv.includes("--watch");
 const arenas = findArenas();
@@ -20,6 +21,9 @@ const buildOptions = (arena) => ({
   // Everything under "game/" and "arena/" is provided by the Screeps: Arena
   // runtime itself - it must stay as a bare import, never get bundled.
   external: ["game", "game/*", "arena", "arena/*"],
+  // Mirrors the "shared/*" path in tsconfig.base.json, so code shared across
+  // arenas gets bundled straight into each arena's main.mjs.
+  alias: { shared: path.join(rootDir, "shared") },
 });
 
 if (watch) {

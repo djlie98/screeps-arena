@@ -1,14 +1,17 @@
-// shared/rush.ts
 import { getObjectsByPrototype } from "game/utils";
 import { ATTACK, MOVE } from "game/constants";
-import { StructureSpawn } from "game/prototypes";
-var attacker;
-function runSpawnRush() {
+import { Creep, StructureSpawn } from "game/prototypes";
+
+let attacker: Creep | undefined;
+
+/** Spawns one attacker and sends it straight at the enemy spawn. */
+export function runSpawnRush(): void {
   if (!attacker) {
     const mySpawn = getObjectsByPrototype(StructureSpawn).find((s) => s.my);
     attacker = mySpawn?.spawnCreep([MOVE, ATTACK]).object;
     return;
   }
+
   const enemySpawn = getObjectsByPrototype(StructureSpawn).find((s) => !s.my);
   if (!enemySpawn) {
     return;
@@ -16,11 +19,3 @@ function runSpawnRush() {
   attacker.moveTo(enemySpawn);
   attacker.attack(enemySpawn);
 }
-
-// season4-spawn_and_swamp/src/main.ts
-function loop() {
-  runSpawnRush();
-}
-export {
-  loop
-};
