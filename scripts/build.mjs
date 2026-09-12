@@ -21,9 +21,9 @@ const buildOptions = (arena) => ({
   // Everything under "game/" and "arena/" is provided by the Screeps: Arena
   // runtime itself - it must stay as a bare import, never get bundled.
   external: ["game", "game/*", "arena", "arena/*"],
-  // Mirrors the "shared/*" path in tsconfig.base.json, so code shared across
+  // Mirrors the "common/*" path in tsconfig.base.json, so code shared across
   // arenas gets bundled straight into each arena's main.mjs.
-  alias: { shared: path.join(rootDir, "shared") },
+  alias: { common: path.join(rootDir, "common") },
 });
 
 if (watch) {

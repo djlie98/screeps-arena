@@ -23,9 +23,9 @@ Root-level tooling:
 
 ```
 package.json
-tsconfig.base.json        <- shared strict compiler options + the "shared/*" path alias
+tsconfig.base.json        <- shared strict compiler options + the "common/*" path alias
 types/globals.d.ts        <- ambient `console` declaration (not shipped by the game's typings)
-shared/                    <- code shared across arenas (see below)
+common/                    <- code shared across arenas (see below)
 scripts/
   arenas.mjs             <- discovers arenas (any folder with src/main.ts + typings/)
   patch-typings.mjs      <- fixes a handful of bugs in the game's generated .d.ts files (see below)
@@ -53,14 +53,14 @@ Each arena is bundled independently and imports from `"game/*"` (and `"arena/*"`
 
 ## Sharing code across arenas
 
-Put reusable logic (a creep role, a movement helper, a pathfinding wrapper) under `shared/` at the repo root, and import it from any arena as `"shared/<name>"`:
+Put reusable logic (a creep role, a movement helper, a pathfinding wrapper) under `common/` at the repo root, and import it from any arena as `"common/<name>"`:
 
 ```ts
-// shared/rush.ts
+// common/rush.ts
 export function runSpawnRush(): void { /* ... */ }
 
 // season3-spawn_strike/src/main.ts
-import { runSpawnRush } from "shared/rush";
+import { runSpawnRush } from "common/rush";
 
 export function loop(): void {
   runSpawnRush();
@@ -68,10 +68,10 @@ export function loop(): void {
 ```
 
 This works because:
-- `tsconfig.base.json` maps the `shared/*` specifier to `shared/*` at the repo root (`baseUrl`/`paths`), so every arena's `tsconfig.json` - which all extend that base file - resolves and type-checks it.
-- `scripts/build.mjs` sets a matching esbuild `alias`, so `shared/*` imports get bundled straight into each arena's own `main.mjs` at build time (esbuild otherwise only leaves `game/*`/`arena/*` unbundled).
+- `tsconfig.base.json` maps the `common/*` specifier to `common/*` at the repo root (`baseUrl`/`paths`), so every arena's `tsconfig.json` - which all extend that base file - resolves and type-checks it.
+- `scripts/build.mjs` sets a matching esbuild `alias`, so `common/*` imports get bundled straight into each arena's own `main.mjs` at build time (esbuild otherwise only leaves `game/*`/`arena/*` unbundled).
 
-Each arena's build is still fully independent: esbuild inlines a separate copy of whatever `shared/` code you use into each `main.mjs`, so there's no shared runtime state between arenas, no matter how many of them import the same module. `season3-spawn_strike` and `season4-spawn_and_swamp` both use `shared/rush.ts` this way as a real example.
+Each arena's build is still fully independent: esbuild inlines a separate copy of whatever `common/` code you use into each `main.mjs`, so there's no shared runtime state between arenas, no matter how many of them import the same module. `season3-spawn_strike` and `season4-spawn_and_swamp` both use `common/rush.ts` this way as a real example.
 
 ## About `scripts/patch-typings.mjs`
 

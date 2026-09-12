@@ -6,10 +6,10 @@
     "moduleResolution": "Bundler",
     // Resolved relative to this file's own directory (the repo root), not
     // wherever a given arena's tsconfig.json extends it from - so this one
-    // "shared/*" mapping works for every arena's src/main.ts.
+    // "common/*" mapping works for every arena's src/main.ts.
     "baseUrl": ".",
     "paths": {
-      "shared/*": ["shared/*"]
+      "common/*": ["common/*"]
     },
     "strict": true,
     "noUnusedLocals": true,
