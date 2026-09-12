@@ -30,7 +30,7 @@ scripts/
   patch-typings.mjs      <- fixes a handful of bugs in the game's generated .d.ts files (see below)
   build.mjs              <- esbuild: bundles each arena's src/main.ts -> <arena>/main.mjs
   typecheck.mjs          <- runs `tsc --noEmit` per arena
-  new-arena.mjs          <- scaffolds a new arena's src/main.ts + tsconfig.json
+  add-arena.mjs          <- adds src/main.ts + tsconfig.json to a game-synced arena folder
 ```
 
 ## Setup
@@ -44,7 +44,7 @@ npm install
 - `npm run build` - bundle every arena's `src/main.ts` into its `main.mjs`.
 - `npm run watch` - same, but rebuilds on save (leave running while you work; point the game's local-folder sync at the arena folder as usual and it'll pick up the rebuilt `main.mjs`).
 - `npm run typecheck` - type-check every arena with `tsc --noEmit`, no output files.
-- `npm run new-arena -- <folder-name>` - scaffold a new arena (e.g. for a season/arena that isn't in this repo yet). After that, open the arena in the Screeps client and enable local-folder sync pointed at the new folder so it can populate `typings/`.
+- `npm run add-arena -- <folder-name>` - add TypeScript support to an arena the game has already created (see below).
 
 Each arena is bundled independently and imports from `"game/*"` (and `"arena/*"`) are kept external - they're resolved by the Arena runtime itself, not bundled. You can freely split an arena's logic across multiple files under its `src/` folder; esbuild will bundle them together into the one `main.mjs` the game expects.
 
@@ -56,20 +56,24 @@ The `.d.ts` files Screeps: Arena generates under each arena's `typings/` folder 
 
 `patch-typings.mjs` fixes them in place, and is idempotent (safe to run repeatedly, a no-op once already applied). It runs automatically before `build` and `typecheck` (`prebuild`/`pretypecheck`/`prewatch` npm hooks), so if the game re-syncs fresh typings and reintroduces the bugs, they're fixed again on your next build.
 
-## Adding a new arena to an existing folder
+## Adding a new arena (e.g. a new season)
 
-If you've already got a game-synced folder (with `typings/` and `jsconfig.json`) but no `src/`:
+Screeps: Arena itself creates the arena's folder - not this repo. When you open a new arena/season in the client and enable **"Sync to local folder"** pointed at a new folder (e.g. `season5-whatever/`), the game writes `typings/`, `jsconfig.json`, and a stub `main.mjs` into it.
+
+Once that folder exists, run:
 
 ```
-mkdir <arena-name>/src
+npm run add-arena -- season5-whatever
 ```
 
-then add a `tsconfig.json` next to it (copy an existing arena's) and a `src/main.ts` with at least:
+This adds `src/main.ts` (seeded from the `main.mjs` the game just wrote - typically just the empty stub) and a `tsconfig.json`, so `npm run build`/`watch`/`typecheck` pick it up automatically. It's a no-op if `src/main.ts` already exists, so it's safe to run again.
 
-```ts
-export function loop(): void {
-  // ...
-}
-```
+## Playing / testing your bot
 
-`npm run build` will pick it up automatically.
+1. `npm run watch` (leave it running while you code) - or `npm run build` once before you play.
+2. In the Screeps: Arena client, make sure the arena you're working on has **"Sync to local folder"** enabled and pointed at that arena's folder in this repo (this is what made `typings/`/`jsconfig.json` appear in the first place). The client reads `main.mjs` directly from disk, so it'll pick up whatever `esbuild` just produced from your `src/main.ts`.
+3. Edit `src/main.ts`, save - `npm run watch` rebuilds `main.mjs` in milliseconds.
+4. Back in the client, run/launch the arena as usual (practice match, sandbox run against the AI, etc.) - it uses the current `main.mjs` on disk, not an in-browser editor buffer.
+5. When you're happy with a version, commit it (`git add`/`git commit`) - `main.mjs` is a generated file but it's what the game actually ran, so it's worth having in history alongside the `src/main.ts` that produced it.
+
+If an arena has a separate ranked/tournament submission step in the client (as opposed to just running practice matches), that's a click in the Screeps UI itself once you're synced up - this repo only handles getting your TypeScript into the `main.mjs` the client reads, not the in-game submission flow.

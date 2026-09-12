@@ -12,7 +12,7 @@
     "watch": "node scripts/build.mjs --watch",
     "pretypecheck": "npm run patch-typings",
     "typecheck": "node scripts/typecheck.mjs",
-    "new-arena": "node scripts/new-arena.mjs"
+    "add-arena": "node scripts/add-arena.mjs"
   },
   "devDependencies": {
     "esbuild": "^0.24.0",
