@@ -6,11 +6,13 @@
   "description": "TypeScript workspace for Screeps: Arena bots",
   "scripts": {
     "patch-typings": "node scripts/patch-typings.mjs",
-    "prebuild": "npm run patch-typings",
+    "consolidate-typings": "node scripts/consolidate-typings.mjs",
+    "sync-typings": "npm run patch-typings && npm run consolidate-typings",
+    "prebuild": "npm run sync-typings",
     "build": "node scripts/build.mjs",
-    "prewatch": "npm run patch-typings",
+    "prewatch": "npm run sync-typings",
     "watch": "node scripts/build.mjs --watch",
-    "pretypecheck": "npm run patch-typings",
+    "pretypecheck": "npm run sync-typings",
     "typecheck": "node scripts/typecheck.mjs",
     "add-arena": "node scripts/add-arena.mjs"
   },

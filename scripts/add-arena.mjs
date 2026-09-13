@@ -6,6 +6,8 @@
 import { mkdirSync, writeFileSync, readFileSync, existsSync } from "node:fs";
 import path from "node:path";
 import { rootDir } from "./arenas.mjs";
+import { patchTypings } from "./patch-typings.mjs";
+import { consolidateTypings } from "./consolidate-typings.mjs";
 
 const name = process.argv[2];
 
@@ -64,4 +66,8 @@ writeFileSync(
 );
 
 console.log(`Created ${name}/src/main.ts (seeded from its main.mjs) and ${name}/tsconfig.json.`);
+
+patchTypings();
+consolidateTypings();
+
 console.log(`Run "npm run typecheck" to check it, then "npm run build" to regenerate ${name}/main.mjs from src/main.ts.`);

@@ -27,4 +27,25 @@ export function findArenas() {
     }));
 }
 
+/**
+ * Any top-level directory with a `typings/` folder - whether or not
+ * `add-arena` has been run on it yet. Used by consolidate-typings.mjs, which
+ * needs to see freshly game-synced folders too.
+ *
+ * Excludes `common/` itself: that's where consolidate-typings *writes* its
+ * output (common/typings/), so it must never be read back as a source -
+ * otherwise a second run would fold the consolidated output into itself.
+ */
+export function findTypingsSources() {
+  return readdirSync(rootDir)
+    .filter((name) => name !== "common")
+    .filter((name) => statSync(path.join(rootDir, name)).isDirectory())
+    .filter((name) => existsSync(path.join(rootDir, name, "typings")))
+    .map((name) => ({
+      name,
+      dir: path.join(rootDir, name),
+      typingsDir: path.join(rootDir, name, "typings"),
+    }));
+}
+
 export { rootDir };

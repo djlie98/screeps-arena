@@ -69,23 +69,31 @@ const patches = [
   },
 ];
 
-let changedFiles = 0;
+export function patchTypings() {
+  let changedFiles = 0;
 
-for (const arena of findArenas()) {
-  for (const patch of patches) {
-    const filePath = path.join(arena.dir, "typings", patch.file);
-    if (!existsSync(filePath)) {
-      continue;
-    }
-    const before = readFileSync(filePath, "utf8");
-    const after = patch.apply(before);
-    if (after !== before) {
-      writeFileSync(filePath, after);
-      changedFiles += 1;
+  for (const arena of findArenas()) {
+    for (const patch of patches) {
+      const filePath = path.join(arena.dir, "typings", patch.file);
+      if (!existsSync(filePath)) {
+        continue;
+      }
+      const before = readFileSync(filePath, "utf8");
+      const after = patch.apply(before);
+      if (after !== before) {
+        writeFileSync(filePath, after);
+        changedFiles += 1;
+      }
     }
   }
+
+  if (changedFiles > 0) {
+    console.log(`Patched ${changedFiles} typings file(s).`);
+  }
+
+  return { changedFiles };
 }
 
-if (changedFiles > 0) {
-  console.log(`Patched ${changedFiles} typings file(s).`);
+if (import.meta.url === `file://${process.argv[1]}`) {
+  patchTypings();
 }
