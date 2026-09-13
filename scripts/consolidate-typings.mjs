@@ -29,6 +29,7 @@ import {
   existsSync,
 } from "node:fs";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 import { rootDir, findTypingsSources } from "./arenas.mjs";
 
 const OUTPUT_DIR = path.join(rootDir, "common", "typings");
@@ -124,6 +125,6 @@ export function consolidateTypings() {
   return { arenaCount: sources.length, filesWritten, warnings };
 }
 
-if (import.meta.url === `file://${process.argv[1]}`) {
+if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
   consolidateTypings();
 }

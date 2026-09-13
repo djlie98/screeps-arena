@@ -7,6 +7,7 @@
 // "pre" step on both build and typecheck.
 import { readFileSync, writeFileSync, existsSync } from "node:fs";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 import { findArenas } from "./arenas.mjs";
 
 const patches = [
@@ -94,6 +95,6 @@ export function patchTypings() {
   return { changedFiles };
 }
 
-if (import.meta.url === `file://${process.argv[1]}`) {
+if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
   patchTypings();
 }
