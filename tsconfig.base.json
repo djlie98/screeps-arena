@@ -4,12 +4,13 @@
     "lib": ["ES2020"],
     "module": "ESNext",
     "moduleResolution": "Bundler",
-    // Resolved relative to this file's own directory (the repo root), not
-    // wherever a given arena's tsconfig.json extends it from - so this one
-    // "common/*" mapping works for every arena's src/main.ts.
-    "baseUrl": ".",
+    // "paths" entries are resolved relative to this file's own directory
+    // (the repo root), not wherever a given arena's tsconfig.json extends it
+    // from - so this one "common/*" mapping works for every arena's
+    // src/main.ts. (No "baseUrl" - newer TypeScript versions removed it in
+    // favor of explicit "./"-prefixed paths entries like the one below.)
     "paths": {
-      "common/*": ["common/*"]
+      "common/*": ["./common/*"]
     },
     "strict": true,
     "noUnusedLocals": true,
