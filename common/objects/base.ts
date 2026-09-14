@@ -2,6 +2,7 @@ import { Handler, StateMachine } from "../lib/states/state-machine";
 import { AttackerState } from "./creep/attacker";
 import { HarvesterState } from "./creep/harvester";
 import { HealerState } from "./creep/healer";
+import { QueueSpawnerState } from "./spawner/queue-spawner";
 
 export const BaseState = {
   IDLE: "IDLE",
@@ -12,6 +13,7 @@ export const State = {
   ...AttackerState,
   ...HarvesterState,
   ...HealerState,
+  ...QueueSpawnerState,
 } as const;
 export type State = (typeof State)[keyof typeof State];
 

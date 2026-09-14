@@ -17,7 +17,7 @@ export class StateMachine<T> {
 
   handle(unit: Unit<T>) {
     const handler = this.handlers.get(this.currentState);
-    this.currentState = handler?.getNextState(unit) || State.IDLE;
     handler?.run(unit);
+    this.currentState = handler?.getNextState(unit) || State.IDLE;
   }
 }
