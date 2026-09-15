@@ -3,14 +3,9 @@ import { BaseSpawner } from "../spawn";
 import { BaseCreep } from "../creep";
 import { SpawnHandler } from "common/lib/states/handlers/spawner/spawn-handler";
 import { BodyPartType } from "game/prototypes/creep";
+import { State } from "common/lib/constants/state";
 
 const handlers = [new SpawnHandler()];
-
-export const QueueSpawnerState = {
-  SPAWN: "SPAWN",
-} as const;
-export type QueueSpawnerState =
-  (typeof QueueSpawnerState)[keyof typeof QueueSpawnerState];
 
 export interface CreepQueueItem {
   desiredBodies: Array<BodyPartType>;
@@ -41,5 +36,7 @@ export class QueueSpawner extends BaseSpawner {
 
   constructor(spawner: StructureSpawn) {
     super(spawner, handlers);
+
+    this.machine.currentState = State.SPAWN;
   }
 }

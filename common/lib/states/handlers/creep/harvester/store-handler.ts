@@ -1,11 +1,11 @@
+import { State } from "common/lib/constants/state";
 import { Handler } from "common/lib/states/state-machine";
-import { State } from "common/objects/base";
 import { Harvester } from "common/objects/creep/harvester";
 import { ERR_NOT_IN_RANGE, RESOURCE_ENERGY } from "game/constants";
 import { Creep } from "game/prototypes";
 
 export class StoreHandler implements Handler<Creep> {
-  state: State = State.HARVEST;
+  state: State = State.STORE;
 
   run(unit: Harvester) {
     if (

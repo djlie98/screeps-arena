@@ -1,8 +1,8 @@
 import { ERR_NOT_IN_RANGE } from "game/constants";
 import { Handler } from "../../../state-machine";
 import { Creep } from "game/prototypes";
-import { State } from "common/objects/base";
 import { Healer } from "common/objects/creep/healer";
+import { State } from "common/lib/constants/state";
 
 export class HealHandler implements Handler<Creep> {
   state = State.HEAL;

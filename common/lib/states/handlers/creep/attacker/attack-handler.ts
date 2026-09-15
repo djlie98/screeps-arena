@@ -2,7 +2,7 @@ import { ATTACK, ERR_NOT_IN_RANGE, RANGED_ATTACK } from "game/constants";
 import { Handler } from "../../../state-machine";
 import { Creep } from "game/prototypes";
 import { Attacker } from "common/objects/creep/attacker";
-import { State } from "common/objects/base";
+import { State } from "common/lib/constants/state";
 
 export class AttackHandler implements Handler<Creep> {
   state = State.ATTACK;

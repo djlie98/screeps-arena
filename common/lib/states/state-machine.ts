@@ -1,4 +1,5 @@
-import { State, Unit } from "common/objects/base";
+import { Unit } from "common/objects/base";
+import { State } from "../constants/state";
 
 export interface Handler<T> {
   state: State;
@@ -17,6 +18,7 @@ export class StateMachine<T> {
 
   handle(unit: Unit<T>) {
     const handler = this.handlers.get(this.currentState);
+    console.log(handler);
     handler?.run(unit);
     this.currentState = handler?.getNextState(unit) || State.IDLE;
   }

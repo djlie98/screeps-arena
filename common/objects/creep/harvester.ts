@@ -3,23 +3,19 @@ import { BaseCreep } from "../creep";
 import { HarvestHandler } from "common/lib/states/handlers/creep/harvester/harvest-handler";
 import { StoreHandler } from "common/lib/states/handlers/creep/harvester/store-handler";
 import { CARRY, MOVE, WORK } from "game/constants";
+import { State } from "common/lib/constants/state";
+import { BodyPartType } from "game/prototypes/creep";
 
 const handlers = [new HarvestHandler(), new StoreHandler()];
 
-export const HarvesterState = {
-  HARVEST: "HARVEST",
-  STORE: "STORE",
-} as const;
-export type HarvesterState =
-  (typeof HarvesterState)[keyof typeof HarvesterState];
-
 export class Harvester extends BaseCreep {
+  static desiredBodies: Array<BodyPartType> = [MOVE, WORK, CARRY];
   storeTarget?: StructureSpawn;
 
   constructor(creep: Creep) {
     super(creep, handlers);
 
-    Harvester.desiredBodies = [MOVE, WORK, CARRY];
+    this.machine.currentState = State.HARVEST;
   }
 
   isFull(): boolean {
